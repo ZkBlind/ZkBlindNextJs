@@ -8,8 +8,32 @@ import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { goerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { Layout } from "../components/Layout";
+import { Chain } from "wagmi/chains";
 
-const { chains, provider } = configureChains([goerli], [publicProvider()]);
+const MantleChain: Chain = {
+  id: 5001,
+  name: "Mantle",
+  network: "mantle",
+  nativeCurrency: {
+    symbol: "BIT",
+    decimals: 18,
+    name: "BIT",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.testnet.mantle.xyz/"],
+    },
+    public: {
+      http: ["https://rpc.testnet.mantle.xyz/"],
+    },
+  },
+  testnet: true,
+};
+
+const { chains, provider } = configureChains(
+  [goerli, MantleChain],
+  [publicProvider()]
+);
 
 const { connectors } = getDefaultWallets({
   appName: "My RainbowKit App",
