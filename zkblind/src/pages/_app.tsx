@@ -7,7 +7,7 @@ import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { goerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
-import { Layout } from "../components/Layout";
+import { Layout } from "@/components/Layout";
 import { Chain } from "wagmi/chains";
 
 const MantleChain: Chain = {
