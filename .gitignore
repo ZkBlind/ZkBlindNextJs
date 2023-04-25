@@ -2,6 +2,8 @@
 
 # dependencies
 */node_modules
+./node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -42,5 +44,7 @@ next-env.d.ts
 
 tmp
 # circuits
-
 *.r1cs
+*.zkey
+*.sym
+*.ptau
