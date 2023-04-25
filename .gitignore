@@ -41,8 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 # circuits
-
 *.r1cs
+*.zkey
+*.sym
+*.ptau
 
 # test
 tmp
+
