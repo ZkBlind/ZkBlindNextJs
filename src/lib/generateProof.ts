@@ -16,9 +16,12 @@ export const generateProof = async (
   // Paths to the .wasm file and proving key
   const wasmPath = path.join(
     process.cwd(),
-    "circuits/simple_multiplier_js/simple_multiplier.wasm"
+    "circuits/simple_multiplier/simple_multiplier_js/simple_multiplier.wasm"
   );
-  const provingKeyPath = path.join(process.cwd(), "circuits/proving_key.zkey");
+  const provingKeyPath = path.join(
+    process.cwd(),
+    "circuits/simple_multiplier/proving_key.zkey"
+  );
 
   try {
     // Generate a proof of the circuit and create a structure for the output signals
