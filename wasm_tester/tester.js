@@ -83,9 +83,9 @@ async function compile (fileName, options) {
     if (options.verbose) flags += "--verbose ";
 
     try {
-	b = await exec("circom " + flags + fileName);
+	    b = await exec("circom " + flags + fileName);
 	if (options.verbose) {
-            console.log(b.stdout);
+        console.log(b.stdout);
 	}
     } catch (e) {
 	assert(false,
