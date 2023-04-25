@@ -5,8 +5,6 @@ import { setupDirectories } from "../../test_utils"
 const pathToCircom = "../Multiplier2.circom"
 
 describe("Test multiplier2", function () {
-    this.timeout(100000);
-
     const multiplier2Dir = setupDirectories(pathToCircom);
 
     it("Checking the compilation of a simple circuit generating wasm in a given folder without recompiling", async function () {
