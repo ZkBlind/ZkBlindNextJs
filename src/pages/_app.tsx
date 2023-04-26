@@ -1,14 +1,12 @@
 import "@rainbow-me/rainbowkit/styles.css";
-import "@/styles/globals.css";
 
 import type { AppProps } from "next/app";
 
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { goerli } from "wagmi/chains";
+import { Chain, goerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { Layout } from "@/components/Layout";
-import { Chain } from "wagmi/chains";
 
 const MantleChain: Chain = {
   id: 5001,

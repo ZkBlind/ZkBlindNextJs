@@ -1,81 +1,123 @@
-import { Disclosure } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-const navigation = [{ name: "ZkBlind", href: "/" }];
+import { createStyles, Text, Header, Container, Group } from "@mantine/core";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+const navigation = [{ label: "ZkBlind", link: "/" }];
+
+const HEADER_HEIGHT = 60;
+
+const useStyles = createStyles((theme) => ({
+  root: {
+    position: "relative",
+    zIndex: 1,
+  },
+
+  dropdown: {
+    position: "absolute",
+    top: HEADER_HEIGHT,
+    left: 0,
+    right: 0,
+    zIndex: 0,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
+    borderTopWidth: 0,
+    overflow: "hidden",
+
+    [theme.fn.largerThan("md")]: {
+      display: "none",
+    },
+  },
+
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+  },
+
+  links: {
+    [theme.fn.smallerThan("md")]: {
+      display: "none",
+    },
+  },
+
+  burger: {
+    [theme.fn.largerThan("md")]: {
+      display: "none",
+    },
+  },
+
+  link: {
+    display: "block",
+    lineHeight: 1,
+    padding: "8px 12px",
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[0]
+        : theme.colors.gray[7],
+    fontSize: theme.fontSizes.lg,
+    fontWeight: 500,
+
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
+    },
+
+    [theme.fn.smallerThan("sm")]: {
+      borderRadius: 0,
+      padding: theme.spacing.md,
+    },
+  },
+
+  linkActive: {
+    "&, &:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.fn.rgba(theme.colors[theme.primaryColor][9], 0.25)
+          : theme.colors[theme.primaryColor][0],
+      color:
+        theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 3 : 7],
+    },
+  },
+}));
 
 const Navbar = () => {
+  const router = useRouter();
+  const { classes, cx } = useStyles();
+  const items = navigation.map((link) => (
+    <Link key={link.label} href={link.link} passHref>
+      <Text
+        className={cx(classes.link, {
+          [classes.linkActive]: router.asPath === link.link,
+        })}
+      >
+        {link.label}
+      </Text>
+    </Link>
+  ));
+
   return (
-    <Disclosure as="nav" className="bg-gray-800">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 justify-between">
-              <div className="flex">
-                <div className="-ml-2 mr-2 flex items-center md:hidden">
-                  {/* Mobile menu button */}
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </Disclosure.Button>
-                </div>
-
-                <div className="hidden md:ml-6 md:flex md:items-center md:space-x-4">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "rounded-md px-3 py-2 text-md font-medium"
-                      )}
-                      aria-current={item.current ? "page" : undefined}
-                    >
-                      {item.name}
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex items-center md:ml-12">
-                <ConnectButton />
-              </div>
-            </div>
-          </div>
-
-          <Disclosure.Panel className="md:hidden">
-            <div className="space-y-1 px-2 pt-2 pb-3 sm:px-3">
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as="a"
-                  href={item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block rounded-md px-3 py-2 text-base font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </Disclosure.Button>
-              ))}
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
+    <Header height={HEADER_HEIGHT} mb={10} className={classes.root}>
+      <Container className={classes.header}>
+        <Group spacing={5} className={classes.links}>
+          {items}
+        </Group>
+        <Group spacing={5}>
+          <ConnectButton
+            accountStatus={{
+              smallScreen: "avatar",
+              largeScreen: "full",
+            }}
+          />
+        </Group>
+      </Container>
+    </Header>
   );
 };
 
