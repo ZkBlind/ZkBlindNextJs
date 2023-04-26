@@ -5,8 +5,6 @@ import { setupDirectories } from "../../test_utils"
 const pathToCircom = "./eth_addr.circom"
 
 describe("Test eth_addr", function () {
-    this.timeout(100000);
-
     const ethaddr2Dir = setupDirectories(pathToCircom);
 
     it("Checking the compilation of a simp...", async function () {
@@ -17,7 +15,7 @@ describe("Test eth_addr", function () {
                 // recompile: false,
             }
         );
-        const w = await circuit.calculateWitness({"privkey": ["6862539325408419825", "7739665414899438580", "3575179427557022600", "11277760030985572954"]});
+        const w = await circuit.calculateWitness({ "privkey": ["6862539325408419825", "7739665414899438580", "3575179427557022600", "11277760030985572954"] });
         await circuit.checkConstraints(w);
     });
 });

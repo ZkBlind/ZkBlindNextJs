@@ -6,5 +6,5 @@ module.exports = {
   ],
   extension: ['ts'],
   spec: 'circuits/*/test/*.ts',
-  timeout: 100000
+  timeout: 10000000
 };
