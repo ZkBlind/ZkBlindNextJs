@@ -6,3 +6,4 @@ libs = ['lib']
 # Add this 
 [rpc_endpoints]
 goerli = "${GOERLI_RPC_URL}"
+mantle = "https://rpc.testnet.mantle.xyz/"
