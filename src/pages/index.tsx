@@ -19,6 +19,7 @@ import { BiDislike } from "react-icons/bi";
 import { FaLaughSquint } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
+import { getContractInfo } from "@/utils/contracts";
 
 const messages = [
   { id: 1, message: "bla" },
@@ -36,15 +37,14 @@ type ZkBlindMessage = {
 };
 
 export default function Index() {
+  const { contractAddress, abi } = getContractInfo();
   const { address } = useAccount();
   const [isAllowed, setAllowed] = useState<boolean>(false);
 
   useEffect(() => {
-    if (
-      address &&
-      ["0x48294a067D1bC5a58BCbAB4b3bE329d078D9E1Af"].includes(address)
-    ) {
+    if (address) {
       console.log(address);
+      // call contract here
       setAllowed(true);
     }
   }, [address, isAllowed]);
