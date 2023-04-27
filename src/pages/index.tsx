@@ -17,7 +17,8 @@ import {
 import { ArrowLeft, Heart } from "tabler-icons-react";
 import { BiDislike } from "react-icons/bi";
 import { FaLaughSquint } from "react-icons/fa";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
+import { useAccount } from "wagmi";
 
 const messages = [
   { id: 1, message: "bla" },
@@ -35,26 +36,46 @@ type ZkBlindMessage = {
 };
 
 export default function Index() {
-  const [reaction, setReaction] = useState<string>();
-  const [isEncrypted, setIsEncrypted] = useState(false);
+  const { address } = useAccount();
+  const [isAllowed, setAllowed] = useState<boolean>(false);
 
-  const [newMessage, setNewMessage] = useState<string>();
+  useEffect(() => {
+    if (
+      address &&
+      ["0x48294a067D1bC5a58BCbAB4b3bE329d078D9E1Af"].includes(address)
+    ) {
+      console.log(address);
+      setAllowed(true);
+    }
+  }, [address, isAllowed]);
 
   return (
-    <Grid columns={24}>
-      <Grid.Col span={6}>
-        <Image height={250} fit="contain" src="/Zkblind.png" alt="ZkBlind" />
-        <Center>
-          <Button mt={10}>New message</Button>
-        </Center>
-      </Grid.Col>
-      <Grid.Col span={16}>
-        {messages.map((message: ZkBlindMessage) => (
-          <Paper key={message.id} mt={10} shadow="sm" p="md" withBorder>
-            {message.message}
-          </Paper>
-        ))}
-      </Grid.Col>
-    </Grid>
+    <>
+      {isAllowed ? (
+        <Grid columns={24}>
+          <Grid.Col span={6}>
+            <Image
+              height={250}
+              fit="contain"
+              src="/Zkblind.png"
+              alt="ZkBlind"
+            />
+            <Center>
+              <Button mt={10}>New message</Button>
+            </Center>
+          </Grid.Col>
+          <Grid.Col span={16}>
+            {messages.map((message: ZkBlindMessage) => (
+              <Paper key={message.id} mt={10} shadow="sm" p="md" withBorder>
+                {message.message}
+              </Paper>
+            ))}
+          </Grid.Col>
+          )
+        </Grid>
+      ) : (
+        <Text> Please Register </Text>
+      )}
+    </>
   );
 }

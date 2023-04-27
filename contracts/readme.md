@@ -1,3 +1,5 @@
+## Initial SetUp
+
 .env file:
 
 ```bash
@@ -10,3 +12,7 @@ to deploy contract on goerli:
 
 to deploy contract on mantle testnet:
 `forge script script/SimpleMultiplier.s.sol SimpleMultiplierScript --broadcast --verify --rpc-url mantle --legacy`
+
+## Whitelist
+
+`forge create --rpc-url mantle src/WhiteList.sol:Whitelist --private-key <PK> --legacy`
