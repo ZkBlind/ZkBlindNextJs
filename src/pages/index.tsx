@@ -1,24 +1,8 @@
-import {
-  Card,
-  Image,
-  Text,
-  Badge,
-  Button,
-  Group,
-  SimpleGrid,
-  Paper,
-  Avatar,
-  TextInput,
-  Switch,
-  Container,
-  Grid,
-  Center,
-} from "@mantine/core";
-import { ArrowLeft, Heart } from "tabler-icons-react";
-import { BiDislike } from "react-icons/bi";
-import { FaLaughSquint } from "react-icons/fa";
+import { Image, Text, Button, Paper, Grid, Center } from "@mantine/core";
 import React, { useState, useEffect } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useSigner, useNetwork } from "wagmi";
+import { ethers } from "ethers";
+
 import { getContractInfo } from "@/utils/contracts";
 
 const messages = [
@@ -38,16 +22,25 @@ type ZkBlindMessage = {
 
 export default function Index() {
   const { contractAddress, abi } = getContractInfo();
+
   const { address } = useAccount();
+  const { data: signer } = useSigner();
   const [isAllowed, setAllowed] = useState<boolean>(false);
 
   useEffect(() => {
-    if (address) {
-      console.log(address);
-      // call contract here
-      setAllowed(true);
+    async function checkUser() {
+      if (address && signer) {
+        //console.log(address);
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        let isWhiteListed = await contract.verifyUser(address);
+        //console.log(isWhiteListed);
+        setAllowed(isWhiteListed);
+      }
     }
-  }, [address, isAllowed]);
+
+    checkUser();
+  }, [signer, contractAddress, abi, address, isAllowed]);
 
   return (
     <>
