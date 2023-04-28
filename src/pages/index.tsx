@@ -1,6 +1,5 @@
 import {
   Image,
-  Text,
   Button,
   Paper,
   Grid,
@@ -19,29 +18,6 @@ import Link from "next/link";
 import { getContractInfo } from "@/utils/contracts";
 
 const useStyles = createStyles((theme) => ({
-  details: {
-    display: "block",
-    lineHeight: 1,
-    padding: "8px 12px",
-    borderRadius: theme.radius.sm,
-    textDecoration: "none",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
-    fontSize: theme.fontSizes.sm,
-    fontWeight: 500,
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[6]
-        : theme.colors.blue[1],
-
-    [theme.fn.smallerThan("sm")]: {
-      borderRadius: 0,
-      padding: theme.spacing.md,
-      lineHeight: 0.1,
-    },
-  },
   post: {
     display: "block",
     lineHeight: 1,
@@ -132,7 +108,7 @@ type ZkBlindMessage = {
 };
 
 export default function Index() {
-  const { classes, cx } = useStyles();
+  const { classes } = useStyles();
   const [opened, { open, close }] = useDisclosure(false);
   // later improve the code to query the current chain
   const { chain } = useNetwork();
@@ -208,6 +184,9 @@ export default function Index() {
                     withBorder
                   >
                     {message.message}
+                    <Group key={message.id} position="right">
+                      id: {message.id}
+                    </Group>
                   </Paper>
                 </>
               ))}
