@@ -71,15 +71,7 @@ function saveFile(filePath: string, data: any): void {
 
 function bigintReplacer(key: string, value: any): any {
   if (typeof value === 'bigint') {
-    return value.toString() + 'n'; // Convert BigInt to string and append 'n' to indicate it's a BigInt
-  } else {
-    return value;
-  }
-}
-
-function bigintReviver(key: string, value: any): any {
-  if (typeof value === 'string' && value.match(/^-?\d+n$/)) {
-    return BigInt(value.slice(0, -1)); // Remove 'n' and convert string back to BigInt
+    return value.toString(); // Convert BigInt to string
   } else {
     return value;
   }

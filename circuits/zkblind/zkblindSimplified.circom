@@ -8,8 +8,8 @@ template zkBlind() {
     signal input userEmailAddress[2032];
     signal input userEmailSuffix[2032];
 
-    signal input privkey[4];
-    signal input publickey;
+    // signal input privkey[4];
+    // signal input publickey;
 
     // signal input userPrivateKey[256];
     // signal input userEthAddress[2][256];
@@ -52,15 +52,15 @@ template zkBlind() {
         }
     }
 
-    // Constraint 4: user private key can be converted to user ETH address
-    component privToAddr = PrivKeyToAddr(64, 4);  // 4
+    // // Constraint 4: user private key can be converted to user ETH address
+    // component privToAddr = PrivKeyToAddr(64, 4);  // 4
     
-    for (var i = 0; i < 4; i++) {
-        privToAddr.privkey[i] <== privkey[i];
-    }
-    privToAddr.publickey <== publickey;
+    // for (var i = 0; i < 4; i++) {
+    //     privToAddr.privkey[i] <== privkey[i];
+    // }
+    // privToAddr.publickey <== publickey;
 
-    publickey === privToAddr.addr;
+    // publickey === privToAddr.addr;
 
 
     // Enforce that the signature is valid
