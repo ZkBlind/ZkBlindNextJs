@@ -3,7 +3,7 @@ import WhitelistAbi from "@/lib/abi/AddWhitelist.json";
 export function getContractInfo(chain?: number) {
   if (chain === 5001)
     return {
-      contractAddress: "0xdB2b8D972a65Fa812136171a32028752D4AB1EFF",
+      contractAddress: "0x8C46d5ec4e97a2f074305a7b90db3dc846F481AF",
       abi: WhitelistAbi,
     };
   if (chain === 5)
@@ -13,7 +13,7 @@ export function getContractInfo(chain?: number) {
     };
 
   return {
-    contractAddress: "0xdB2b8D972a65Fa812136171a32028752D4AB1EFF",
+    contractAddress: "0x8C46d5ec4e97a2f074305a7b90db3dc846F481AF",
     abi: WhitelistAbi,
   };
 }
