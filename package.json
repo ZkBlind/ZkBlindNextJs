@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "mocha"
+    "test": "mocha",
+    "gen-input": "npx tsx scripts/generateInputs.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
