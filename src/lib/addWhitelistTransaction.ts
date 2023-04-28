@@ -1,20 +1,23 @@
-import { Addresses } from "@/shared/addresses";
+import { getContractInfo } from "@/utils/contracts";
 import {
   prepareWriteContract,
   writeContract,
   getAccount,
   readContract,
+  getNetwork
 } from "@wagmi/core";
+import { useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
 
-const abiFile = require("./abi/AddWhitelist.json");
+const { chain } = getNetwork();
+const { contractAddress, abi } = getContractInfo(chain?.id);
 
 export const checkWhitelisted = async () => {
   const account = getAccount();
   console.log("Current account:", account);
   const data = await readContract({
-    address: Addresses.WHITELIST_ADDR,
-    abi: abiFile,
+    address: contractAddress as `0x${string}`,
+    abi: abi,
     functionName: "verifyUser",
     args: [account.address],
   });
@@ -32,14 +35,12 @@ export const addWhitelistTransaction = async (
   userId: string,
   emailSuffix: string
 ) => {
-  console.log("abi:", abiFile, Addresses.WHITELIST_ADDR);
-
   try {
     proof = ethers.utils.toUtf8Bytes(proof);
     emailSuffix = ethers.utils.formatBytes32String(emailSuffix);
     const config = await prepareWriteContract({
-      address: Addresses.WHITELIST_ADDR,
-      abi: abiFile,
+      address: contractAddress as `0x${string}`,
+      abi: abi,
       functionName: "addToWhitelist",
       args: [proof, userId, emailSuffix],
     });
