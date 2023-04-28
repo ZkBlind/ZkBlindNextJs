@@ -4,7 +4,10 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import { createStyles, Text, Header, Container, Group } from "@mantine/core";
 
-const navigation = [{ label: "ZkBlind", link: "/" }, { label: "Add Whitelist", link: "/whitelist" }];
+const navigation = [
+  { label: "ZkBlind", link: "/" },
+  { label: "Whitelist", link: "/whitelist" },
+];
 
 const HEADER_HEIGHT = 60;
 

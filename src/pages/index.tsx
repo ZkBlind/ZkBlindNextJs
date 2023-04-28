@@ -14,6 +14,7 @@ import React, { useState, useEffect } from "react";
 import { useAccount, useSigner, useNetwork } from "wagmi";
 import { ethers } from "ethers";
 import { createStyles } from "@mantine/core";
+import Link from "next/link";
 
 import { getContractInfo } from "@/utils/contracts";
 
@@ -214,7 +215,9 @@ export default function Index() {
         </>
       ) : (
         <Paper mt={10} shadow="sm" p="md" className={classes.error} withBorder>
-          <Center>Please Register</Center>
+          <Center>
+            Please, <Link href="/whitelist"> Register </Link>
+          </Center>
         </Paper>
       )}
     </>
