@@ -13,8 +13,79 @@ import { useDisclosure } from "@mantine/hooks";
 import React, { useState, useEffect } from "react";
 import { useAccount, useSigner, useNetwork } from "wagmi";
 import { ethers } from "ethers";
+import { createStyles } from "@mantine/core";
 
 import { getContractInfo } from "@/utils/contracts";
+
+const useStyles = createStyles((theme) => ({
+  details: {
+    display: "block",
+    lineHeight: 1,
+    padding: "8px 12px",
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[0]
+        : theme.colors.gray[7],
+    fontSize: theme.fontSizes.sm,
+    fontWeight: 500,
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.blue[1],
+
+    [theme.fn.smallerThan("sm")]: {
+      borderRadius: 0,
+      padding: theme.spacing.md,
+      lineHeight: 0.1,
+    },
+  },
+  post: {
+    display: "block",
+    lineHeight: 1,
+    padding: "8px 12px",
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[0]
+        : theme.colors.gray[7],
+    fontSize: theme.fontSizes.lg,
+    fontWeight: 500,
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.blue[0],
+
+    [theme.fn.smallerThan("sm")]: {
+      borderRadius: 0,
+      padding: theme.spacing.md,
+    },
+  },
+  error: {
+    display: "block",
+    lineHeight: 1,
+    padding: "8px 12px",
+    borderRadius: theme.radius.sm,
+    textDecoration: "none",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[0]
+        : theme.colors.gray[7],
+    fontSize: theme.fontSizes.lg,
+    fontWeight: 600,
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.blue[0],
+
+    [theme.fn.smallerThan("sm")]: {
+      borderRadius: 0,
+      padding: theme.spacing.md,
+    },
+  },
+}));
 
 const demoMessages = [
   {
@@ -60,6 +131,7 @@ type ZkBlindMessage = {
 };
 
 export default function Index() {
+  const { classes, cx } = useStyles();
   const [opened, { open, close }] = useDisclosure(false);
   // later improve the code to query the current chain
   const { chain } = useNetwork();
@@ -124,15 +196,26 @@ export default function Index() {
             </Grid.Col>
             <Grid.Col span={16}>
               {messages?.map((message: ZkBlindMessage) => (
-                <Paper key={message.id} mt={10} shadow="sm" p="md" withBorder>
-                  {message.message}
-                </Paper>
+                <>
+                  <Paper
+                    key={message.id}
+                    mt={10}
+                    shadow="sm"
+                    p="md"
+                    className={classes.post}
+                    withBorder
+                  >
+                    {message.message}
+                  </Paper>
+                </>
               ))}
             </Grid.Col>
           </Grid>
         </>
       ) : (
-        <Text> Please Register </Text>
+        <Paper mt={10} shadow="sm" p="md" className={classes.error} withBorder>
+          <Center>Please Register</Center>
+        </Paper>
       )}
     </>
   );
