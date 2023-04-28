@@ -120,14 +120,18 @@ export default function Index() {
 
   const [messages, setMessages] = useState(demoMessages);
   const [isAllowed, setAllowed] = useState<boolean>(false);
-  const [message, setMessage] = useState("");
-
+  const [message, setMessage] = useState<string>("");
+  const [suffix, setSuffix] = useState<string>("");
   useEffect(() => {
     async function checkUser() {
       if (address && signer) {
         console.log("contractAddress :", contractAddress, abi);
         const contract = new ethers.Contract(contractAddress, abi, signer);
         let isWhiteListed = await contract.verifyUser(address);
+        let data = await contract.whitelistedList(address);
+
+        setSuffix(ethers.utils.parseBytes32String(data.emailSuffix));
+
         setAllowed(isWhiteListed);
       }
     }
@@ -185,7 +189,7 @@ export default function Index() {
                   >
                     {message.message}
                     <Group key={message.id} position="right">
-                      id: {message.id}
+                      {suffix} id: {message.id}
                     </Group>
                   </Paper>
                 </>
