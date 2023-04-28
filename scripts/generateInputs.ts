@@ -5,7 +5,8 @@ import {
   padEmailTo2032Bits,
   stringToBitArray,
   getCircuitInputWithAddrAndSig,
-  generateEmailSuffix
+  generateEmailSuffix,
+  bigint_to_array
 } from "../circuits/test_utils"
 
 type ParsedEmail = {
@@ -102,6 +103,8 @@ if (!emailAddressSuffix) {
 }
 
 const emailAddressSuffixInputBits = stringToBitArray(emailAddressSuffix);
+const emailAddressSuffixBigNumber = 1212937098237091832085610283741235123n; // emailAddressSuffixInputBits
+const emailAddressSuffixInput = bigint_to_array(128, 16, emailAddressSuffixBigNumber);
 
 
 const addrAndSig = JSON.stringify(parsedEmailContent.addrAndSig)
@@ -109,7 +112,7 @@ const sigInput = getCircuitInputWithAddrAndSig(addrAndSig)
 
 const gen_inputs = {
   userEmailAddress: emailAddressInputBits,
-  userEmailSuffix: emailAddressSuffixInputBits,
+  userEmailSuffix: emailAddressSuffixInput,
   userSigR: sigInput.r,
   userSigS: sigInput.s,
   userEthAddressSha256Hash: sigInput.msghash,
