@@ -137,7 +137,7 @@ export default function Index() {
   // later improve the code to query the current chain
   const { chain } = useNetwork();
   // to import the contract address and abi for the current chain
-  const { contractAddress, abi } = getContractInfo();
+  const { contractAddress, abi } = getContractInfo(chain?.id);
 
   const { address } = useAccount();
   const { data: signer } = useSigner();
@@ -149,6 +149,7 @@ export default function Index() {
   useEffect(() => {
     async function checkUser() {
       if (address && signer) {
+        console.log("contractAddress :", contractAddress, abi);
         const contract = new ethers.Contract(contractAddress, abi, signer);
         let isWhiteListed = await contract.verifyUser(address);
         setAllowed(isWhiteListed);
