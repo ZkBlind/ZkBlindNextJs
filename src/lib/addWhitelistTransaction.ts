@@ -4,9 +4,8 @@ import {
   writeContract,
   getAccount,
   readContract,
-  getNetwork
+  getNetwork,
 } from "@wagmi/core";
-import { useAccount, useSigner } from "wagmi";
 import { ethers } from "ethers";
 
 const { chain } = getNetwork();

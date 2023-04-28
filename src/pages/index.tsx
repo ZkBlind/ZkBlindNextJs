@@ -64,73 +64,49 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const demoMessages = [
-  {
-    id: 1,
-    message:
-      "Discover the power of anonymity with ZkBlind! Our innovative zero-knowledge technology ensures your identity is secure while sharing sensitive information with confidence.",
-  },
-  {
-    id: 2,
-    message:
-      "Want to share feedback anonymously? ZkBlind is your go-to platform! Our cutting-edge zero-knowledge protocols protect your identity while enabling honest and transparent communication.",
-  },
-  {
-    id: 3,
-    message:
-      "Concerned about privacy in a digital world? ZkBlind has got you covered! Our zero-knowledge tools and libraries safeguard your personal information, ensuring complete anonymity.  ",
-  },
-  {
-    id: 4,
-    message:
-      "Looking to build secure applications using zero-knowledge proofs and circuits? Look no further than ZkBlind! Our platform is dedicated to aiding developers in implementing technical solutions that prioritize user experience.",
-  },
-  {
-    id: 5,
-    message:
-      "ZkBlind offers a unique opportunity to foster transparent communication and genuine feedback in the workplace. Our platform encourages an honest exchange of ideas without fear of retaliation.",
-  },
-  {
-    id: 6,
-    message:
-      "Do you value your privacy and security? So do we! Embrace the future of confidential communication with ZkBlind and take control of your sensitive information.",
-  },
-  {
-    id: 7,
-    message:
-      "Join the ZkBlind revolution and experience the ultimate level of anonymity and security in digital communication. Our advanced zero-knowledge technology is the solution you've been searching for!",
-  },
-];
-
 type ZkBlindMessage = {
   id: number;
   message: string;
+  suffix: string;
+  userId: number;
 };
 
 export default function Index() {
   const { classes } = useStyles();
   const [opened, { open, close }] = useDisclosure(false);
-  // later improve the code to query the current chain
   const { chain } = useNetwork();
-  // to import the contract address and abi for the current chain
   const { contractAddress, abi } = getContractInfo(chain?.id);
 
   const { address } = useAccount();
   const { data: signer } = useSigner();
 
-  const [messages, setMessages] = useState(demoMessages);
+  const [messages, setMessages] = useState<ZkBlindMessage[]>([]);
+
   const [isAllowed, setAllowed] = useState<boolean>(false);
+
   const [message, setMessage] = useState<string>("");
   const [suffix, setSuffix] = useState<string>("");
+  const [userId, setUserId] = useState<number>(0);
+
+  const loadFromLocalStorage = () => {
+    const savedObj = localStorage.getItem("myObject");
+    if (savedObj) {
+      setMessages(JSON.parse(savedObj));
+    }
+  };
+
   useEffect(() => {
     async function checkUser() {
       if (address && signer) {
-        console.log("contractAddress :", contractAddress, abi);
+        //console.log("contractAddress :", contractAddress, abi);
         const contract = new ethers.Contract(contractAddress, abi, signer);
         let isWhiteListed = await contract.verifyUser(address);
         let data = await contract.whitelistedList(address);
 
+        loadFromLocalStorage();
+
         setSuffix(ethers.utils.parseBytes32String(data.emailSuffix));
+        setUserId(ethers.BigNumber.from(data.userId).toNumber());
 
         setAllowed(isWhiteListed);
       }
@@ -141,7 +117,17 @@ export default function Index() {
 
   function postNewMessage() {
     let len = messages.length + 1;
-    setMessages([...messages, { id: len, message: message }]);
+    setMessages([
+      ...messages,
+      { id: len, message: message, userId: userId, suffix: suffix },
+    ]);
+    localStorage.setItem(
+      "myObject",
+      JSON.stringify([
+        ...messages,
+        { id: len, message: message, userId: userId, suffix: suffix },
+      ])
+    );
   }
 
   return (
@@ -189,7 +175,7 @@ export default function Index() {
                   >
                     {message.message}
                     <Group key={message.id} position="right">
-                      {suffix} id: {message.id}
+                      {message.suffix} id: {message.userId}
                     </Group>
                   </Paper>
                 </>

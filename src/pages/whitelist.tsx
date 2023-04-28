@@ -10,6 +10,7 @@ export default function Whitelist() {
   const [proofInput, setProofInput] = useState("");
   const [pubInput, setPubInput] = useState("");
   const [isWhitelisted, setIsWhitelisted] = useState(false);
+  const [isPosted, setIsPosted] = useState(false);
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -18,11 +19,10 @@ export default function Whitelist() {
     };
 
     fetchUserStatus();
-  }, [isWhitelisted]);
+  }, [isPosted]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("enter handleSubmit...");
     try {
       notifications.show({
         message: "Add whitelist. Submitting transaction...",
@@ -42,6 +42,7 @@ export default function Whitelist() {
         emailSuffix
       );
       const txHash = txResult;
+      setIsPosted(true);
       console.log("txHash...", txHash);
 
       notifications.show({
