@@ -215,6 +215,7 @@ export default function Index() {
         </>
       ) : (
         <Paper mt={10} shadow="sm" p="md" className={classes.error} withBorder>
+          <Image height={250} fit="contain" src="/welcome.png" alt="ZkBlind" />
           <Center>
             Please, <Link href="/whitelist"> Register </Link>
           </Center>
