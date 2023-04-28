@@ -29,7 +29,6 @@ describe("Test zkblind", function () {
 
     const emailAddressInputBits = stringToBitArray(paddedEmail);
 
-
     const emailAddressSuffix = generateEmailSuffix(paddedEmail)
 
     if (!emailAddressSuffix) {
@@ -58,7 +57,10 @@ describe("Test zkblind", function () {
       userSigR: sigInput.r,
       userSigS: sigInput.s,
       userEthAddressSha256Hash: sigInput.msghash,
-      userPubKey: sigInput.pubkey
+      userPubKey: sigInput.pubkey,
+      "privkey": ["6862539325408419825", "7739665414899438580", "3575179427557022600", "11277760030985572954"],
+      "publickey": "978617770967819762654777740949918972567359649306"
+
     });
 
     const arrOut = w.slice(1, 257);

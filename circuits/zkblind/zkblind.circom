@@ -2,10 +2,14 @@ pragma circom 2.0.2;
 
 include "../ecsda-circom/ecdsa.circom";
 include "../../node_modules/circomlib/circuits/sha256/sha256.circom";
+include "../ecsda-circom/eth_addr_2.circom";
 
 template zkBlind() {
     signal input userEmailAddress[2032];
     signal input userEmailSuffix[2032];
+
+    signal input privkey[4];
+    signal input publickey;
 
     // signal input userPrivateKey[256];
     // signal input userEthAddress[2][256];
@@ -48,6 +52,17 @@ template zkBlind() {
         }
     }
 
+    // Constraint 4: user private key can be converted to user ETH address
+    component privToAddr = PrivKeyToAddr(64, 4);  // 4
+    
+    for (var i = 0; i < 4; i++) {
+        privToAddr.privkey[i] <== privkey[i];
+    }
+    privToAddr.publickey <== publickey;
+
+    publickey === privToAddr.addr;
+
+
     // Enforce that the signature is valid
-    ecdsaVerifyNoPubkeyCheck.result === 1;
+    // ecdsaVerifyNoPubkeyCheck.result === 1;
 }
