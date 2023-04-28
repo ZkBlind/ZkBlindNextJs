@@ -2,7 +2,7 @@ import { Addresses } from "@/shared/addresses";
 import { prepareWriteContract, writeContract, getAccount, readContract } from "@wagmi/core";
 import { ethers } from 'ethers';
 
-const abiFile = require("./abi/Whitelist.json");
+const abiFile = require("./abi/AddWhitelist.json");
 
 export const checkWhitelisted = async () => {
   const account = getAccount();
