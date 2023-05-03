@@ -30,18 +30,20 @@ export const checkWhitelisted = async () => {
 };
 
 export const addWhitelistTransaction = async (
-  proof: any,
+  a:any, 
+  b:any, 
+  c:any, 
+  input:any,
   userId: string,
   emailSuffix: string
 ) => {
   try {
-    proof = ethers.utils.toUtf8Bytes(proof);
     emailSuffix = ethers.utils.formatBytes32String(emailSuffix);
     const config = await prepareWriteContract({
       address: contractAddress as `0x${string}`,
       abi: abi,
       functionName: "addToWhitelist",
-      args: [proof, userId, emailSuffix],
+      args: [userId, emailSuffix, a, b, c, input],
     });
 
     // Execute the transaction

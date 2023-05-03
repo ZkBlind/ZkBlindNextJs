@@ -30,14 +30,25 @@ export default function Whitelist() {
       });
 
       const parsedPubInput = JSON.parse(pubInput);
+      const a = parsedPubInput.a;
+      const b = parsedPubInput.b;
+      const c = parsedPubInput.c;
+      const input = parsedPubInput.input;
       const userId = parsedPubInput.userId;
       const emailSuffix = parsedPubInput.emailSuffix;
 
+      console.log("a...", a);
+      console.log("b...", b);
+      console.log("c...", c);
+      console.log("input...", input);
       console.log("userId...", userId);
       console.log("emailSuffix...", emailSuffix);
       // Write the transaction
       const txResult = await addWhitelistTransaction(
-        proofInput,
+        a,
+        b,
+        c,
+        input,
         userId,
         emailSuffix
       );
@@ -67,16 +78,17 @@ export default function Whitelist() {
       ) : (
         <form onSubmit={handleSubmit}>
           <Grid>
-            <Col>
+            {/* <Col>
               <Textarea
                 label="Proof Input"
                 value={proofInput}
                 onChange={(event) => setProofInput(event.currentTarget.value)}
                 required
               />
-            </Col>
+            </Col> */}
             <Col>
               <Textarea
+                minRows={20}
                 label="Public Input"
                 value={pubInput}
                 onChange={(event) => setPubInput(event.currentTarget.value)}
