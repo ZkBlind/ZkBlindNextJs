@@ -1,5 +1,6 @@
 pragma circom 2.0.2;
 
-include "./zkblind/zkblindSimplified.circom";
+include "./zkblind/zkblind.circom";
 
-component main {public [userEmailSuffix]} = zkBlind();
+// for wy.dong96@gmail.com, @ is at index 9, 9 * 8 = 72
+component main {public [userEthAddr, userEmailSuffix, userId]} = zkBlind(72);

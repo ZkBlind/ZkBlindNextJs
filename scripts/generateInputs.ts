@@ -5,9 +5,12 @@ import {
   padEmailTo2032Bits,
   stringToBitArray,
   getCircuitInputWithAddrAndSig,
-  generateEmailSuffix,
-  bigint_to_array
+  bigint_to_array,
+  bitArrayToBigInt,
+  extractLeastSignificantBits,
+  ethAddressToBigInt
 } from "../circuits/test_utils"
+import { sha256 } from 'js-sha256';
 
 type ParsedEmail = {
   emailAddress: string;
@@ -94,31 +97,38 @@ if (!paddedEmail) {
   throw ("The email address is not valid.");
 }
 
+const hash = sha256(paddedEmail);
+
+const userId = extractLeastSignificantBits(hash, 216);
+
 const emailAddressInputBits = stringToBitArray(paddedEmail);
 
-const emailAddressSuffix = generateEmailSuffix(paddedEmail)
-
-if (!emailAddressSuffix) {
-  throw ("The email address suffix is not valid.");
+const emailSuffix = `@${email.split('@')[1]}`;
+const paddedEmailSuffix = padEmailTo2032Bits(emailSuffix);
+if (!paddedEmailSuffix) {
+  throw ("The email suffix is not valid.");
 }
-
-const emailAddressSuffixInputBits = stringToBitArray(emailAddressSuffix);
-const emailAddressSuffixBigNumber = 1212937098237091832085610283741235123n; // emailAddressSuffixInputBits
-const emailAddressSuffixInput = bigint_to_array(128, 16, emailAddressSuffixBigNumber);
-
+const emailAddressSuffixInputBits = stringToBitArray(paddedEmailSuffix);
+const emailAddressSuffixBigInt = bitArrayToBigInt(emailAddressSuffixInputBits);
+const emailAddressSuffixInput = bigint_to_array(128, 16, emailAddressSuffixBigInt);
 
 const addrAndSig = JSON.stringify(parsedEmailContent.addrAndSig)
 const sigInput = getCircuitInputWithAddrAndSig(addrAndSig)
 
+const userEthAddr = parsedEmailContent.addrAndSig[0]
+
+const userEthAddrBigInt = ethAddressToBigInt(userEthAddr)
+
 const gen_inputs = {
+  userId: userId,
   userEmailAddress: emailAddressInputBits,
   userEmailSuffix: emailAddressSuffixInput,
+  userEthAddr: userEthAddrBigInt,
   userSigR: sigInput.r,
   userSigS: sigInput.s,
   userEthAddressSha256Hash: sigInput.msghash,
   userPubKey: sigInput.pubkey
 };
-
 
 const repoRoot = getRepoRoot();
 

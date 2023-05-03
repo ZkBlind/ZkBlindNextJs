@@ -4,10 +4,10 @@ import {
   setupDirectories,
   padEmailTo2032Bits,
   stringToBitArray,
-  bitArray2buffer
+  extractLeastSignificantBits
 } from "../../test_utils"
 import { sha256 } from 'js-sha256';
-import { assert } from 'chai';
+import { expect } from 'chai';
 
 const pathToCircom = "../sha256bits2032.circom"
 
@@ -26,6 +26,8 @@ describe("Test sha256", function () {
 
     const hash = sha256(paddedEmail);
 
+    const userId = extractLeastSignificantBits(hash, 216);
+
     const inputBits = stringToBitArray(paddedEmail);
 
     const circuit = await wasm_tester(
@@ -35,12 +37,12 @@ describe("Test sha256", function () {
       }
     );
 
-    const w = await circuit.calculateWitness({ "in": inputBits }, true);
+    const w = await circuit.calculateWitness({
+      "userEmailAddress": inputBits,
+      "userId": userId
+    }, true);
 
-    const arrOut = w.slice(1, 257);
-    const hash2 = bitArray2buffer(arrOut).toString("hex");
-
-    assert.equal(hash, hash2);
+    expect(w[1]).to.equal(1n);
 
     await circuit.checkConstraints(w);
   });
