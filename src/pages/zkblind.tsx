@@ -71,7 +71,7 @@ type ZkBlindMessage = {
   userId: number;
 };
 
-export default function Index() {
+export default function Zkblind() {
   const { classes } = useStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const { chain } = useNetwork();

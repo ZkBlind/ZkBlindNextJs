@@ -5,7 +5,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { createStyles, Text, Header, Container, Group } from "@mantine/core";
 
 const navigation = [
-  { label: "ZkBlind", link: "/" },
+  { label: "Home", link: "/" },
+  { label: "ZkBlind", link: "/zkblind" },
   { label: "Whitelist", link: "/whitelist" },
 ];
 
