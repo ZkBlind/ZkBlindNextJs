@@ -132,6 +132,27 @@ export function stringToBitArray(input: string): number[] {
   return bitArray;
 }
 
+export function bitArrayToBigInt(bitArray: number[]): bigint {
+  return bitArray.reduce(
+    (acc, bit, index) =>
+      acc + (BigInt(bit) * (BigInt(2) ** BigInt(index))), BigInt(0)
+  );
+}
+
+export function getEmailSuffixStartingIndexInBitArray(input: string): number {
+  // Find the index of the '@' symbol in the input string
+  const atIndex = input.indexOf('@');
+
+  // Check if the '@' symbol is found in the input string
+  if (atIndex === -1) {
+    throw new Error("Invalid email address: missing '@' symbol");
+  }
+
+  // Convert the index of the '@' symbol in the input string to the corresponding index in the bit array
+  const atIndexInBitArray = atIndex * 8;
+
+  return atIndexInBitArray;
+}
 
 export function bitArray2buffer(a: number[]) {
   const len = Math.floor((a.length - 1) / 8) + 1;
@@ -164,4 +185,15 @@ export function setupDirectories(pathToCircom: string) {
   }
 
   return multiplier2Dir;
+}
+
+export function extractLeastSignificantBits(hexString: string, bits: number): bigint {
+  const fullNumber = BigInt(`0x${hexString}`);
+  const mask = (BigInt(2) ** BigInt(bits)) - BigInt(1);
+  return fullNumber & mask;
+}
+
+export function ethAddressToBigInt(ethAddress: string): bigint {
+  const hexString = ethAddress.startsWith("0x") ? ethAddress.slice(2) : ethAddress;
+  return BigInt(`0x${hexString}`);
 }

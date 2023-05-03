@@ -1,43 +1,57 @@
 pragma circom 2.0.2;
 
 include "../ecsda-circom/ecdsa.circom";
-include "../../node_modules/circomlib/circuits/sha256/sha256.circom";
 include "../ecsda-circom/eth_addr_2.circom";
+include "../../node_modules/circomlib/circuits/sha256/sha256.circom";
+include "../../node_modules/circomlib/circuits/comparators.circom";
+include "../../node_modules/circomlib/circuits/bitify.circom";
+include "../email-suffix/email-suffix.circom";
 
-template zkBlind() {
+template zkBlind(emailSuffixStartingIndex) {
+    signal input userId;
     signal input userEmailAddress[2032];
-    signal input userEmailSuffix[2032];
+    signal input userEmailSuffix[16]; // 127 bits
 
-    signal input privkey[4];
-    signal input publickey;
-
-    // signal input userPrivateKey[256];
-    // signal input userEthAddress[2][256];
+    signal input userEthAddr;
 
     signal input userSigR[4];
     signal input userSigS[4];
     signal input userEthAddressSha256Hash[4];
     signal input userPubKey[2][4];
 
-    signal output userID[256];
+    signal output isValid;
 
     // Constraint 1: User ID is SHA-256 of the user email address
+
     component sha256Hash = Sha256(2032);
     for (var i = 0; i < 2032; i++) {
         sha256Hash.in[i] <== userEmailAddress[i];
     }
-  
-    for (var i = 0; i < 256; i++) {
-        userID[i] <== sha256Hash.out[i];
+
+    component bits2num = Bits2Num(216);
+
+    for (var i=0; i<216; i++) {
+        bits2num.in[i] <== sha256Hash.out[255-i];
     }
 
-    // // Constraint 2: User email address suffix is the suffix of the user email address
-    // // Assuming userEmailSuffix corresponds to the last 256 bits of userEmail
-    // for (var i = 0; i < 2032; i++) {
-    //     userEmailSuffix[i] === userEmailAddress[i];
-    // }
+    component isUserIdEqual = IsEqual();
+    isUserIdEqual.in[0] <== userId;
+    isUserIdEqual.in[1] <== bits2num.out;
 
-    // Constraint 3: User signature of the ETH address is valid
+
+    // Constraint 2: User email address is the sender in the email
+
+
+    // Constraint 3: User email address suffix is the suffix of the user email address
+    component emailSuffixCheck = emailSuffix(emailSuffixStartingIndex);
+    for (var i = 0; i < 2032; i++) {
+        emailSuffixCheck.userEmailAddress[i] <== userEmailAddress[i];
+    }
+    for (var i = 0; i < 16; i++) {
+        emailSuffixCheck.userEmailSuffix[i] <== userEmailSuffix[i];
+    }
+
+    // Constraint 4: User signature of the ETH address in the email is valid
     component ecdsaVerifyNoPubkeyCheck = ECDSAVerifyNoPubkeyCheck(64, 4);
 
     for (var i = 0; i < 4; i++) {
@@ -52,17 +66,14 @@ template zkBlind() {
         }
     }
 
-    // Constraint 4: user private key can be converted to user ETH address
-    component privToAddr = PrivKeyToAddr(64, 4);  // 4
-    
-    for (var i = 0; i < 4; i++) {
-        privToAddr.privkey[i] <== privkey[i];
-    }
-    privToAddr.publickey <== publickey;
-
-    publickey === privToAddr.addr;
-
-
     // Enforce that the signature is valid
     ecdsaVerifyNoPubkeyCheck.result === 1;
+
+    // Constraint 5: User ETH address and signature is the only email body
+
+    // Constraint 6: User email's dkim signature is valid
+
+    // output if all the constraints are met
+    signal isValid1 <== isUserIdEqual.out * ecdsaVerifyNoPubkeyCheck.result;
+    isValid <== isValid1 * emailSuffixCheck.isValid;
 }
