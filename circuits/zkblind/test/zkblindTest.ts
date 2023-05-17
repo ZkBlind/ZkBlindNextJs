@@ -7,9 +7,8 @@ import {
   stringToBitArray,
   getCircuitInputWithAddrAndSig,
   getAddrAndSig,
-  bitArrayToBigInt,
   extractLeastSignificantBits,
-  bigint_to_array
+  stringToNBitBigIntArray
 } from "../../test_utils"
 import { sha256 } from 'js-sha256';
 import { expect } from 'chai';
@@ -31,13 +30,11 @@ describe("Test zkblind", function () {
     const emailAddressInputBits = stringToBitArray(paddedEmail);
 
     const emailSuffix = `@${email.split('@')[1]}`;
-    const paddedEmailSuffix = padEmailTo2032Bits(emailSuffix);
-    if (!paddedEmailSuffix) {
+    const emailAddressSuffixInput = stringToNBitBigIntArray(128, 16, emailSuffix);
+
+    if (!emailAddressSuffixInput) {
       throw ("The email suffix is not valid.");
     }
-    const emailAddressSuffixInputBits = stringToBitArray(paddedEmailSuffix);
-    const emailAddressSuffixBigInt = bitArrayToBigInt(emailAddressSuffixInputBits);
-    const emailAddressSuffixInput = bigint_to_array(128, 16, emailAddressSuffixBigInt);
 
     const hash = sha256(paddedEmail);
 
