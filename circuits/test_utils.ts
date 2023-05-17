@@ -197,3 +197,107 @@ export function ethAddressToBigInt(ethAddress: string): bigint {
   const hexString = ethAddress.startsWith("0x") ? ethAddress.slice(2) : ethAddress;
   return BigInt(`0x${hexString}`);
 }
+
+/**
+ * @param n - number of bits per element
+ * @param k - number of elements
+ * @param str - input string
+ * @returns bit array of length n * k
+ * @description
+ * This function takes in a string and returns a bit array of length n * k
+ * where n is the number of bits per element and k is the number of elements
+ * if the string length is less than the (n*k)*8 then fill the rest with 0s
+ */
+export function string_to_bitarray(n: number, k: number, str: string) {
+  // check if the string is ascii
+  if (!isASCII(str)) {
+    console.error("Input string is not ascii");
+    return null;
+  }
+
+  // convert the string to bytes
+  const strBytes = Array.from(new TextEncoder().encode(str));
+
+  // convert the bytes to bits
+  const bitArray: number[] = strBytes
+    .map((byte: number) => {
+      return Array.from({ length: 8 }, (_, j) => (byte >> (7 - j)) & 1);
+    })
+    .flat();
+
+  const bitArrayLength = bitArray.length;
+  if (bitArrayLength < (n * k)) {
+    const paddingLength = (n * k) - bitArrayLength;
+    const padding = new Array(paddingLength).fill(0);
+    bitArray.push(...padding);
+    return bitArray;
+  } else if (bitArrayLength > (n * k)) {
+    console.error("Input string is larger than (n * k) bits");
+    return null;
+  }
+}
+
+/**
+ * @param n - number of bits in bigint for each array item
+ * @param k - number of array items
+ * @param str - input string
+ * @returns array of n-bit bigints of length k
+ * 
+ * This function takes an ASCII string and returns an array of BigInts, where each BigInt 
+ * is composed of concatenated reversed binary representations of the characters in the string.
+ * The least significant bit of the first BigInt corresponds to the first bit in the reversed 
+ * binary representation of the first character in the string.
+ * 
+ * For example, if the first three characters of the string are 'abc' (whose binary representations 
+ * are '01100001', '01100010', and '01100011'), the first BigInt will be formed by concatenating 
+ * their reversed binary representations ('10000110', '01000110', '11000110') in the same order 
+ * as the characters in the string:
+ * '11000110' (reversed 'c') + '01000110' (reversed 'b') + '10000110' (reversed 'a') 
+ * = '110001100100011010000110'.
+ * 
+ * This process continues for the rest of the string. If the string's length is less than (n*k)/8, 
+ * the remaining bits in the last BigInt are filled with 0s. If the string's length is more than (n*k)/8, 
+ * an error is thrown.
+ */
+export function stringToNBitBigIntArray(n: number, k: number, str: string) {
+  // check if the string is ascii
+  if (!/^[\x00-\x7F]*$/.test(str)) {
+    console.error("Input string is not ascii");
+    return null;
+  }
+
+  // check if n is divisible by 8
+  if (n % 8 !== 0) {
+    console.error("n should be divisible by 8");
+    return null;
+  }
+
+  // convert the string to bytes
+  const strBytes = new TextEncoder().encode(str);
+  const numBytes = n / 8; // number of bytes per array item
+
+  // check if input string is larger than (n*k)/8
+  if (strBytes.length > numBytes * k) {
+    console.error("Input string is larger than (n * k) / 8 bytes");
+    return null;
+  }
+
+  // Pre-fill bigintArray with zeros
+  const bigintArray = new Array(k).fill(BigInt(0));
+
+  // convert bytes to n-bit bigints and fill with 0s if necessary
+  for (let i = 0; i < strBytes.length; i++) {
+    // Reverse the bits in each byte
+    const reversedByte = parseInt(
+      strBytes[i].toString(2).padStart(8, '0').split('').reverse().join(''),
+      2
+    );
+    // Calculate the corresponding index and offset in the bigintArray
+    const index = Math.floor(i / numBytes);
+    const offset = (i % numBytes) * 8;
+    // Update the corresponding bigint
+    bigintArray[index] |= BigInt(reversedByte) << BigInt(offset);
+  }
+
+  return bigintArray;
+}
