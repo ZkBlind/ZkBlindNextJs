@@ -6,7 +6,7 @@ import {
   readContract,
   getNetwork,
 } from "@wagmi/core";
-import { ethers } from "ethers";
+import { utils, BigNumber } from "ethers";
 
 const { chain } = getNetwork();
 const { contractAddress, abi } = getContractInfo(chain?.id);
@@ -21,7 +21,7 @@ export const checkWhitelisted = async () => {
     args: [account.address],
   });
 
-  console.log("Verify data:", data);
+  console.log("Verifying status:", data);
 
   if (data) {
     return true;
@@ -30,20 +30,23 @@ export const checkWhitelisted = async () => {
 };
 
 export const addWhitelistTransaction = async (
-  a:any, 
-  b:any, 
-  c:any, 
-  input:any,
+  a: any,
+  b: any,
+  c: any,
+  input: any,
   userId: string,
   emailSuffix: string
 ) => {
   try {
-    emailSuffix = ethers.utils.formatBytes32String(emailSuffix);
+    emailSuffix = utils.formatBytes32String(emailSuffix);
     const config = await prepareWriteContract({
       address: contractAddress as `0x${string}`,
       abi: abi,
       functionName: "addToWhitelist",
       args: [userId, emailSuffix, a, b, c, input],
+      overrides: {
+        gasLimit: BigNumber.from(1_000_000),
+      },
     });
 
     // Execute the transaction
