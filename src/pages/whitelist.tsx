@@ -10,6 +10,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAccount } from "wagmi";
+
 import {
   addWhitelistTransaction,
   checkWhitelisted,
@@ -28,8 +29,11 @@ export default function Whitelist() {
       if (address) {
         const whiteRes = await checkWhitelisted(address);
         setIsWhitelisted(whiteRes);
+        setLoaded(true);
       }
-      setLoaded(true);
+      if (!address) {
+        setLoaded(true);
+      }
     };
 
     fetchUserStatus();
@@ -98,7 +102,9 @@ export default function Whitelist() {
       ) : (
         <Container>
           {isWhitelisted ? (
-            <Text>Current user had whitelisted.</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              Current user had whitelisted.
+            </Text>
           ) : (
             <form onSubmit={handleSubmit}>
               <Grid>
