@@ -111,8 +111,8 @@ export default function Zkblind() {
         setUserId(BigNumber.from(data.userId).toNumber());
 
         setAllowed(isWhiteListed);
-        setLoaded(true);
       }
+      setLoaded(true);
     }
 
     checkUser();

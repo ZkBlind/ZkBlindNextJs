@@ -2,7 +2,6 @@ import { getContractInfo } from "@/utils/contracts";
 import {
   prepareWriteContract,
   writeContract,
-  getAccount,
   readContract,
   getNetwork,
 } from "@wagmi/core";
@@ -11,14 +10,13 @@ import { utils, BigNumber } from "ethers";
 const { chain } = getNetwork();
 const { contractAddress, abi } = getContractInfo(chain?.id);
 
-export const checkWhitelisted = async () => {
-  const account = getAccount();
-  console.log("Current account:", account);
+export const checkWhitelisted = async (address: string) => {
+  console.log("Current account:", address);
   const data = await readContract({
     address: contractAddress as `0x${string}`,
     abi: abi,
     functionName: "verifyUser",
-    args: [account.address],
+    args: [address],
   });
 
   console.log("Verifying status:", data);
@@ -30,10 +28,10 @@ export const checkWhitelisted = async () => {
 };
 
 export const addWhitelistTransaction = async (
-  a: any,
-  b: any,
-  c: any,
-  input: any,
+  a: string[],
+  b: string[],
+  c: string[],
+  input: string[],
   userId: string,
   emailSuffix: string
 ) => {

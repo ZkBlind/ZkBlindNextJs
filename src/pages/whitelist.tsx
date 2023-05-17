@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import React, { useState, useEffect } from "react";
 import { notifications } from "@mantine/notifications";
+import { useAccount } from "wagmi";
 import {
   addWhitelistTransaction,
   checkWhitelisted,
@@ -20,16 +21,19 @@ export default function Whitelist() {
   const [isWhitelisted, setIsWhitelisted] = useState<boolean>(false);
   const [isPosted, setIsPosted] = useState<boolean>(false);
   const [isLoaded, setLoaded] = useState<boolean>(false);
+  const { address } = useAccount();
 
   useEffect(() => {
     const fetchUserStatus = async () => {
-      const whiteRes = await checkWhitelisted();
-      setIsWhitelisted(whiteRes);
+      if (address) {
+        const whiteRes = await checkWhitelisted(address);
+        setIsWhitelisted(whiteRes);
+      }
       setLoaded(true);
     };
 
     fetchUserStatus();
-  }, [isPosted]);
+  }, [isPosted, address]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -55,7 +59,6 @@ export default function Whitelist() {
       console.log("input...", input);
       console.log("userId...", userId);
       console.log("emailSuffix...", emailSuffix); */
-      // Write the transaction
       const txHash = await addWhitelistTransaction(
         a,
         b,
