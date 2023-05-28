@@ -102,8 +102,8 @@ export default function Zkblind() {
       if (address && signer) {
         //console.log("contractAddress :", contractAddress, abi);
         const contract = new Contract(contractAddress, abi, signer);
-        let isWhiteListed = await contract.verifyUser(address);
-        let data = await contract.whitelistedList(address);
+        const isWhiteListed = await contract.verifyUser(address);
+        const data = await contract.whitelistedList(address);
 
         loadFromLocalStorage();
 

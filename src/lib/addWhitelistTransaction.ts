@@ -7,11 +7,11 @@ import {
 } from "@wagmi/core";
 import { utils, BigNumber } from "ethers";
 
-const { chain } = getNetwork();
-const { contractAddress, abi } = getContractInfo(chain?.id);
-
 export const checkWhitelisted = async (address: string) => {
-  console.log("Current account:", address);
+  const { chain } = getNetwork();
+  const { contractAddress, abi } = getContractInfo(chain?.id);
+
+  // console.log("Current account:", address);
   const data = await readContract({
     address: contractAddress as `0x${string}`,
     abi: abi,
@@ -19,7 +19,7 @@ export const checkWhitelisted = async (address: string) => {
     args: [address],
   });
 
-  console.log("Verifying status:", data);
+  // console.log("Verifying status:", data);
 
   if (data) {
     return true;
@@ -36,6 +36,8 @@ export const addWhitelistTransaction = async (
   emailSuffix: string
 ) => {
   try {
+    const { chain } = getNetwork();
+    const { contractAddress, abi } = getContractInfo(chain?.id);
     emailSuffix = utils.formatBytes32String(emailSuffix);
     const config = await prepareWriteContract({
       address: contractAddress as `0x${string}`,
