@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { Chain, goerli } from "wagmi/chains";
+import { Chain, goerli, polygonMumbai } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import { Layout } from "@/components/Layout";
 
@@ -29,7 +29,7 @@ const MantleChain: Chain = {
 };
 
 const { chains, provider } = configureChains(
-  [goerli, MantleChain],
+  [goerli, MantleChain, polygonMumbai],
   [publicProvider()]
 );
 

@@ -12,6 +12,12 @@ export function getContractInfo(chain?: number) {
       abi: WhitelistAbi,
     };
 
+  if (chain === 80001)
+    return {
+      contractAddress: "0x6188dF506030124Df780f62de8Aa7DFd618a5CCC",
+      abi: WhitelistAbi,
+    };
+
   return {
     contractAddress: "0x210899C848A107bd5ec3BEfF3eDfEeAaE7aD8723",
     abi: WhitelistAbi,
